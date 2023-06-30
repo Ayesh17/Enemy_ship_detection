@@ -7,7 +7,7 @@ from keras.layers import LSTM, Dense
 from sklearn.metrics import confusion_matrix, accuracy_score
 
 # Folder structure
-train_data_dir = 'train_data'
+train_data_dir = 'train_data2'
 test_data_dir = 'test_data'
 
 # Iterate over all CSV files in the train_data directory
@@ -16,6 +16,7 @@ print("csv", csv_files)
 
 # Read the CSV files and concatenate them into a single DataFrame
 data = pd.concat([pd.read_csv(os.path.join(train_data_dir, f)) for f in csv_files])
+print("data",data)
 
 # Extract input features and target variable
 print("X_shape", data.shape)
@@ -24,10 +25,10 @@ y = data.iloc[:, -1].values
 print("y_shape", y.shape)
 # Reshape the input features
 # X shape: (num_samples, timesteps, features)
-print("X_shape", X.shape)
+# print("X_shape", X.shape)
 num_samples, num_features = X.shape
 timesteps = 1  # Adjust the number of time steps as needed
-print("Total number of elements:", num_samples * timesteps * num_features)
+# print("Total number of elements:", num_samples * timesteps * num_features)
 
 X = X.reshape(num_samples, 1, num_features)
 
@@ -43,21 +44,19 @@ model.add(Dense(3, activation='softmax'))
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
 # Train the model
-model.fit(X, y_one_hot, epochs=1, batch_size=32)
+model.fit(X, y_one_hot, epochs=1, batch_size=16)
 
 print()
 print("*" * 210)
 print("Training finished")
 print()
 
-behavior_classes = ['BENIGN', 'RAM', 'HERD']
+behavior_classes = ['BENIGN', 'RAM', 'BLOCK']
+acc_list = []
 # Make predictions on all test files
 for behavior_class in behavior_classes:
-    print("behavior",behavior_class)
     test_dir = os.path.join(test_data_dir, behavior_class)
-    print("dir",test_dir)
     csv_files = [f for f in os.listdir(test_dir) if f.endswith('.csv')]
-    print("files",csv_files)
     overall_accuracy = 0
     for csv_file in csv_files:
         # print("csv", csv_file)
@@ -72,9 +71,15 @@ for behavior_class in behavior_classes:
         true_labels = data.iloc[:, -1].values
         y_pred = np.argmax(predictions, axis=1)
         # y_true = np.argmax(true_labels, axis=1)
+        print("y_pred", y_pred)
+        print("true_labels", true_labels)
         accuracy = accuracy_score(true_labels, y_pred)
         overall_accuracy += accuracy
         # print("Accuracy:", accuracy)
 
     print("behavior", behavior_class)
-    print("Overall accuracy:", overall_accuracy / len(csv_files))
+    overall_acc = overall_accuracy / len(csv_files)
+    print("Overall accuracy:", overall_acc)
+    acc_list.append(overall_acc)
+
+print("acc_list",acc_list)
