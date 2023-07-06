@@ -2,6 +2,11 @@
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/HMM_test_data" />
+      <excludeFolder url="file://$MODULE_DIR$/HMM_train_data" />
+      <excludeFolder url="file://$MODULE_DIR$/Test_data" />
+      <excludeFolder url="file://$MODULE_DIR$/Train_data" />
+      <excludeFolder url="file://$MODULE_DIR$/Train_data2" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
     <orderEntry type="jdk" jdkName="Enemy_ship_detection" jdkType="Python SDK" />

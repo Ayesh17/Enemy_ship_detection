@@ -20,7 +20,10 @@ output_folder = os.path.join(os.getcwd(), 'Train_data')
 behavior_phase = 15  # 12-indexed
 
 # List of sub-folder names
-sub_folder_names = ['BENIGN', 'RAM', 'BLOCK']
+sub_folder_names = ['BENIGN', 'RAM', 'BLOCK', 'HERD', 'CROSS', 'HEADON', 'OVERTAKE', 'STATIONARY']
+
+output_folder = os.path.join(output_folder, sub_folder_name)
+# output_folder = os.path.join(output_folder_path, sub_folder_name)
 
 # Create the output folder if it doesn't exist
 if not os.path.exists(output_folder):
@@ -31,6 +34,12 @@ if not os.path.exists(output_folder):
 # Loop over each sub-folder name
 for sub_folder_name in sub_folder_names:
     count = 0
+
+    # output_folder = os.path.join(output_folder_path, sub_folder_name)
+    #
+    # # Create the output folder if it doesn't exist
+    # if not os.path.exists(output_folder):
+    #     os.makedirs(output_folder)
 
     # Get the path of the current sub-folder
     subfolder_path = os.path.join(input_folder, sub_folder_name)
@@ -94,7 +103,7 @@ output_folder = os.path.join(os.getcwd(), 'Test_data')
 behavior_phase = 15  # 12-indexed
 
 # List of sub-folder names
-sub_folder_names = ['BENIGN', 'RAM', 'HERD']
+sub_folder_names = ['BENIGN', 'RAM', 'BLOCK', 'HERD', 'CROSS', 'HEADON', 'OVERTAKE', 'STATIONARY']
 
 # To preprocess data and put preprocessed data into behavior folders
 # Loop over each sub-folder name
@@ -135,7 +144,7 @@ for sub_folder_name in sub_folder_names:
                                 row[behavior_phase] = '0'
                             elif row[behavior_phase] == '6':
                                 row[behavior_phase] = '1'
-                            elif row[behavior_phase] == '7':
+                            elif row[behavior_phase] == '8':
                                 row[behavior_phase] = '2'
 
                             behavior_label = row.pop(behavior_phase)  # Remove behavior_label from the row
