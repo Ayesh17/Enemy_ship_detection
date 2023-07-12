@@ -10,7 +10,9 @@ test_data_dir = 'test_data'
 #Convert
 def convert_dataset(data_dir):
     # Read all CSV files in the data directory
+    print("a")
     csv_files = [f for f in os.listdir(data_dir) if f.endswith('.csv')]
+    print("csv", csv_files)
     dataset = []
     labels = []
     max_sequence_length = 200  # Maximum sequence length
@@ -54,7 +56,7 @@ def load_dataset(data_path='data'):
     dataset = save['dataset']
     labels = save['labels']
 
-    print('Motorway set', dataset.shape, labels.shape)
+    print('Dataset', dataset.shape, labels.shape)
     return dataset, labels
 
 

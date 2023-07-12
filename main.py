@@ -14,10 +14,10 @@ def load_dataset(data_path='data'):
         save = pickle.load(f)
     dataset = save['dataset']
     labels = save['labels']
-    print('Dataet', dataset.shape, labels.shape)
+    print('Dataset', dataset.shape, labels.shape)
 
     # Reshape the labels to match the model's output shape
-    labels = labels[:, -1, :]
+    labels = labels[:, -1]
 
     X_train, X_test, y_train, y_test = train_test_split(dataset, labels, test_size=0.33, random_state=42)
     return X_train, X_test, y_train, y_test
@@ -56,7 +56,7 @@ def main():
     model = create_model(input_shape, num_classes)
 
     # Train the model
-    train_model(model, X_train, y_train, epochs=1)
+    train_model(model, X_train, y_train, epochs=50)
 
     # Evaluate the model
     evaluate_model(model, X_test, y_test)
