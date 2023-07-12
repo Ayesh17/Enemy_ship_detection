@@ -34,9 +34,10 @@ if not os.path.exists(output_folder):
 # Loop over each sub-folder name
 for sub_folder_name in sub_folder_names:
     count = 0
+    csv_file_count = 0
 
     # output_folder = os.path.join(output_folder_path, sub_folder_name)
-    #
+
     # # Create the output folder if it doesn't exist
     # if not os.path.exists(output_folder):
     #     os.makedirs(output_folder)
@@ -53,35 +54,55 @@ for sub_folder_name in sub_folder_names:
     print("csv_files", csv_files)
 
     for csv_file_path in csv_files:
-        if count < 5000:
+        if count < 500:
             print("count", count)
             print("path", csv_file_path)
             with open(csv_file_path, 'r') as csv_file:
                 csv_reader = csv.reader(csv_file)
                 print(csv_file_path)
 
-                # Create the output file
-                output_file_path = os.path.join(output_folder, os.path.basename(csv_file_path))
-                with open(output_file_path, 'w', newline='') as out_file:
-                    csv_writer = csv.writer(out_file)
+                sequence_length = 200  # sequence length
 
-                    # Add column names to the output file based on column positions
-                    column_names = ['col1', 'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8', 'col9', 'col10','col11', 'col12', 'col13', 'col14', 'col15', 'col16', 'col17', 'col18', 'col19', 'col20','col21', 'col22', 'col23', 'col24', 'col25', 'col26', 'col27', 'col28', 'col29', 'col30','col31', 'col32', 'col33', 'col34', 'col35', 'col36', 'col37', 'col38', 'col39']  # Adjust column names as needed
-                    csv_writer.writerow(column_names)
+                # Read the first 200 rows from the CSV file
+                rows = []
+                for i, row in enumerate(csv_reader):
+                    if i >= sequence_length:
+                        break
+                    rows.append(row)
 
-                    for row in csv_reader:
-                        if row[behavior_phase] == '8':
-                            row[behavior_phase] = '0'
+                # Check if the number of rows is at least 200
+                if len(rows) >= sequence_length:
+                    # Create the output file
+                    output_file_path = os.path.join(output_folder, os.path.basename(csv_file_path))
+                    with open(output_file_path, 'w', newline='') as out_file:
+                        csv_writer = csv.writer(out_file)
 
-                        behavior_label = row.pop(behavior_phase)  # Remove behavior_label from the row
-                        row.append(behavior_label)  # Append behavior_label to the end of the row
+                        # Add column names to the output file based on column positions
+                        column_names = ['col1', 'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8', 'col9', 'col10',
+                                        'col11', 'col12', 'col13', 'col14', 'col15', 'col16', 'col17', 'col18', 'col19',
+                                        'col20', 'col21', 'col22', 'col23', 'col24', 'col25', 'col26', 'col27', 'col28',
+                                        'col29', 'col30', 'col31', 'col32', 'col33', 'col34', 'col35', 'col36', 'col37',
+                                        'col38', 'col39']  # Adjust column names as needed
+                        csv_writer.writerow(column_names)
 
-                        csv_writer.writerow(row)
-                count = count + 1
+                        # Write the rows to the output file
+                        for row in rows:
+                            if row[behavior_phase] == '1':
+                                row[behavior_phase] = '0'
+                            elif row[behavior_phase] == '8':
+                                row[behavior_phase] = '2'
+                            elif row[behavior_phase] == '6':
+                                row[behavior_phase] = '1'
 
-            # Check if the output csv file is empty, delete it if it is
-            if os.path.getsize(output_file_path) == 0:
-                os.remove(output_file_path)
+                            behavior_label = row.pop(behavior_phase)  # Remove behavior_label from the row
+                            row.append(behavior_label)  # Append behavior_label to the end of the row
+
+                            csv_writer.writerow(row)
+                        count = count + 1
+
+                # Check if the output csv file is empty, delete it if it is
+                if os.path.getsize(output_file_path) == 0:
+                    os.remove(output_file_path)
 
 #
 # print()

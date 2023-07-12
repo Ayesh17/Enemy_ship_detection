@@ -47,7 +47,7 @@ def main():
     X_train, X_test, y_train, y_test = load_dataset()
 
     # Convert labels to categorical format
-    num_classes = 8  # Number of classes
+    num_classes = 3  # Number of classes
     y_train = to_categorical(y_train, num_classes)
     y_test = to_categorical(y_test, num_classes)
 
@@ -56,7 +56,7 @@ def main():
     model = create_model(input_shape, num_classes)
 
     # Train the model
-    train_model(model, X_train, y_train, epochs=50)
+    train_model(model, X_train, y_train, epochs=100)
 
     # Evaluate the model
     evaluate_model(model, X_test, y_test)
