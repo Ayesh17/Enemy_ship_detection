@@ -25,7 +25,9 @@ def load_dataset(data_path='data'):
 
 def create_model(input_shape, num_classes):
     model = Sequential()
-    model.add(LSTM(128, input_shape=input_shape))
+    model.add(LSTM(128, input_shape=input_shape, return_sequences=True))
+    model.add(LSTM(64))
+    model.add(Dense(64, activation='relu'))
     model.add(Dense(num_classes, activation='softmax'))
     return model
 
@@ -38,16 +40,28 @@ def evaluate_model(model, X_test, y_test):
     y_pred_classes = np.argmax(y_pred, axis=1)
     y_true_classes = np.argmax(y_test, axis=1)
     print('Confusion matrix:')
-    print(confusion_matrix(y_true_classes, y_pred_classes))
+    cm = confusion_matrix(y_true_classes, y_pred_classes)
+    print(cm)
+    make_pdf_of_confusion_matrix(cm)
     scores = model.evaluate(X_test, y_test, verbose=0)
     print('Accuracy:', scores[1])
+
+def make_pdf_of_confusion_matrix(cm):
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    plt.figure(figsize=(10, 10))
+    labels = ['BENIGN', 'RAM', 'BLOCK',]
+    sns.heatmap(cm, annot=True, cmap="Reds", xticklabels=labels, yticklabels=labels)
+    plt.title("Confusion Matrix")
+    plt.savefig("confusion_matrix.pdf")
 
 def main():
     # Load the dataset
     X_train, X_test, y_train, y_test = load_dataset()
 
     # Convert labels to categorical format
-    num_classes = 3  # Number of classes
+    num_classes = 8  # Number of classes
     y_train = to_categorical(y_train, num_classes)
     y_test = to_categorical(y_test, num_classes)
 
