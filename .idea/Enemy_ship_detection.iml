@@ -10,6 +10,8 @@
       <excludeFolder url="file://$MODULE_DIR$/venv" />
       <excludeFolder url="file://$MODULE_DIR$/Data" />
       <excludeFolder url="file://$MODULE_DIR$/HMM_train_data_preprocessed" />
+      <excludeFolder url="file://$MODULE_DIR$/Test_data - Copy" />
+      <excludeFolder url="file://$MODULE_DIR$/Train_data - Copy" />
     </content>
     <orderEntry type="jdk" jdkName="Enemy_ship_detection" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

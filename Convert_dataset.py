@@ -10,7 +10,6 @@ test_data_dir = 'test_data'
 #Convert
 def convert_dataset(data_dir):
     # Read all CSV files in the data directory
-    print("a")
     csv_files = [f for f in os.listdir(data_dir) if f.endswith('.csv')]
     print("csv", csv_files)
     dataset = []
@@ -49,9 +48,16 @@ def convert_dataset(data_dir):
         pickle.dump({'dataset': dataset, 'labels': labels}, f)
 
 # Read
-def load_dataset(data_path='data'):
-    with open(os.path.join(data_path, 'train_dataset.pkl'), 'rb') as f:
-        save = pickle.load(f)
+def load_dataset(data_dir, data_path='data'):
+    if data_dir == train_data_dir:
+        with open(os.path.join(data_path, 'train_dataset.pkl'), 'rb') as f:
+            save = pickle.load(f)
+    elif data_dir == test_data_dir:
+        with open(os.path.join(data_path, 'test_dataset.pkl'), 'rb') as f:
+            save = pickle.load(f)
+    else:
+        with open(os.path.join(data_path, 'other_dataset.pkl'), 'rb') as f:
+            save = pickle.load(f)
 
     dataset = save['dataset']
     labels = save['labels']
@@ -61,6 +67,7 @@ def load_dataset(data_path='data'):
 
 
 convert_dataset(train_data_dir)
+convert_dataset(test_data_dir)
 
-loaded_dataset, loaded_labels = load_dataset()
-
+loaded_dataset, loaded_labels = load_dataset(train_data_dir)
+loaded_dataset, loaded_labels = load_dataset(test_data_dir)
