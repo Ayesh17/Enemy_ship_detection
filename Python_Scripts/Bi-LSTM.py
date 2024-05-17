@@ -50,7 +50,7 @@ def create_model(input_shape, num_classes):
   model = Sequential()
   model.add(Bidirectional(LSTM(128, return_sequences=True), input_shape=input_shape))  # Using Bidirectional LSTM
   model.add(Dropout(0.1))
-  model.add(Bidirectional(LSTM(64)))  # Using Bidirectional LSTM
+  model.add(Bidirectional(LSTM(64)))
   model.add(Dropout(0.1))
   model.add(Dense(64, activation='relu'))
   model.add(Dense(num_classes, activation='softmax'))
@@ -81,6 +81,8 @@ def train_model(model, X_train, y_train, X_val, y_val,  epochs):
 
 
 def evaluate_model(model, X_test, y_test):
+
+    # Confusion matrix
     y_pred = model.predict(X_test)
     y_pred_classes = np.argmax(y_pred, axis=1)
     y_true_classes = np.argmax(y_test, axis=1)
@@ -92,21 +94,28 @@ def evaluate_model(model, X_test, y_test):
     accuracy = model.evaluate(X_test, y_test, verbose=0)[1]
     print('Accuracy:', accuracy)
 
+    # Each class evaluation
     precision = precision_score(y_true_classes, y_pred_classes, average='macro')
     recall = recall_score(y_true_classes, y_pred_classes, average='macro')
     f1 = f1_score(y_true_classes, y_pred_classes, average='macro')
 
     # specificity = cm[0, 0] / (cm[0, 0] + cm[0, 1])  # True Negative Rate
 
+    print()
+    print("Macro Evaluation Results")
     print('Precision:', precision)
     print('Recall:', recall)
     # print('Specificity:', specificity)
     print('F1-score:', f1)
 
+
+    # Overall Evaluation using average = None
     precision = precision_score(y_true_classes, y_pred_classes, average=None)
     recall = recall_score(y_true_classes, y_pred_classes, average=None)
     f1 = f1_score(y_true_classes, y_pred_classes, average=None)
 
+    print()
+    print("Average = None Evaluation Results")
     print('Precision:', precision)
     print('Recall:', recall)
     # print('Specificity:', specificity)

@@ -4,6 +4,8 @@ from random import random
 import numpy as np
 import pandas as pd
 import pickle
+
+from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential
 from keras.layers import Bidirectional, LSTM, Dense, Dropout, SimpleRNN, GRU
@@ -47,16 +49,14 @@ def load_dataset(data_dir, data_path='data'):
 
 
 def create_model(input_shape, num_classes):
-    model = Sequential()
-    model.add(GRU(128, input_shape=input_shape, return_sequences=True))  # Using GRU instead of SimpleRNN
-    model.add(Dropout(0.4))
-    model.add(GRU(64))  # Using GRU instead of SimpleRNN
-    model.add(Dropout(0.4))
-    model.add(Dense(64, activation='relu'))
-    model.add(Dense(num_classes, activation='softmax'))
-    return model
-
-
+  model = Sequential()
+  model.add(Bidirectional(LSTM(128, return_sequences=True), input_shape=input_shape))  # Using Bidirectional LSTM
+  model.add(Dropout(0.1))
+  model.add(Bidirectional(LSTM(64)))
+  model.add(Dropout(0.1))
+  model.add(Dense(64, activation='relu'))
+  model.add(Dense(num_classes, activation='softmax'))
+  return model
 
 def train_model(model, X_train, y_train, X_val, y_val,  epochs):
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
@@ -90,7 +90,7 @@ def evaluate_model(model, X_test, y_test):
     print('Confusion matrix:')
     cm = confusion_matrix(y_true_classes, y_pred_classes)
     print(cm)
-    make_pdf_of_confusion_matrix(cm)
+    # make_pdf_of_confusion_matrix(cm)
 
     accuracy = model.evaluate(X_test, y_test, verbose=0)[1]
     print('Accuracy:', accuracy)
@@ -123,15 +123,36 @@ def evaluate_model(model, X_test, y_test):
     print('F1-score:', f1)
 
 
-def make_pdf_of_confusion_matrix(cm):
-    import matplotlib.pyplot as plt
-    import seaborn as sns
+# def make_pdf_of_confusion_matrix(cm):
+#     import matplotlib.pyplot as plt
+#     import seaborn as sns
+#
+#     plt.figure(figsize=(10, 10))
+#     labels = ['BENIGN', 'RAM', 'BLOCK',]
+#     sns.heatmap(cm, annot=True, cmap="Blues", xticklabels=labels, yticklabels=labels)
+#     plt.title("Confusion Matrix")
+#     plt.savefig("confusion_matrix.pdf")
 
-    plt.figure(figsize=(10, 10))
-    labels = ['BENIGN', 'RAM', 'BLOCK',]
-    sns.heatmap(cm, annot=True, cmap="Blues", xticklabels=labels, yticklabels=labels)
-    plt.title("Confusion Matrix")
-    plt.savefig("confusion_matrix.pdf")
+def plot_training_validation_curves(history):
+    # Accuracy plot
+    plt.figure()
+    plt.plot(history.history['accuracy'], label='training accuracy')
+    plt.plot(history.history['val_accuracy'], label='validation accuracy')
+    plt.title('Training and Validation Accuracy')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.legend()
+    plt.show()
+
+    # Loss plot
+    plt.figure()
+    plt.plot(history.history['loss'], label='training loss')
+    plt.plot(history.history['val_loss'], label='validation loss')
+    plt.title('Training and Validation Loss')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.show()
 
 def main():
     # Load the dataset
@@ -161,9 +182,14 @@ def main():
     # Train the model
     train_model(model, X_train, y_train, X_val, y_val, epochs=100)
 
+    # Train the model
+    history = model.fit(X_train, y_train, epochs=100, validation_data=(X_val, y_val))
+
     # Evaluate the model
     evaluate_model(model, X_test, y_test)
 
+    # Plot the training/validation accuracy and loss graphs
+    plot_training_validation_curves(history)
 
 if __name__ == '__main__':
     main()
